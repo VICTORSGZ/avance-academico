@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Avance Académico</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    try {
+      const params = new URLSearchParams(window.location.hash.slice(1));
+      const theme = params.get('theme') || localStorage.getItem('avanceAcademico.theme.v1') || sessionStorage.getItem('avanceAcademico.theme.v1');
+      document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
+    } catch (error) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">A</span>
+      <div>
+        <h1>Avance Académico</h1>
+        <p>Malla interactiva</p>
+      </div>
+    </div>
+    <nav class="menu" aria-label="Menú principal">
+      <button type="button" class="menu-btn active" data-target="mallaSection">Ver malla</button>
+      <a class="menu-btn" href="mantenedor.html">Administrar mallas</a>
+      <button type="button" class="menu-btn ghost" id="btnReset">Limpiar avance</button>
+      <label class="theme-control">
+        <span>Tema</span>
+        <select id="themeSelect">
+          <option value="light">Claro</option>
+          <option value="dark">Oscuro</option>
+        </select>
+      </label>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <section class="hero" id="resumenSection">
+      <div class="hero-copy">
+        <span class="eyebrow">Progreso del plan</span>
+        <h2>Marca ramos aprobados y revisa qué puedes tomar.</h2>
+        <p>Haz clic en una asignatura disponible para marcarla como aprobada. Los ramos no aprobados se clasifican automáticamente como disponibles o bloqueados según sus prerrequisitos.</p>
+      </div>
+      <div class="summary-card">
+        <div class="progress-circle" id="progressCircle" style="--progress:0">
+          <span id="progressText">0%</span>
+        </div>
+        <div class="summary-values">
+          <strong id="completedText">0 / 0</strong>
+          <span>ramos aprobados</span>
+          <strong id="creditsText">0 / 0</strong>
+          <span>créditos aprobados</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="malla-switcher viewer-switcher" aria-label="Selector de malla">
+      <div>
+        <span class="eyebrow">Malla activa</span>
+        <h2 id="currentMallaName">Informática</h2>
+        <p id="currentMallaMeta">0 ramos</p>
+      </div>
+      <label class="filter-field">
+        <span>Seleccionar malla</span>
+        <select id="mallaSelect"></select>
+      </label>
+      <div class="backup-actions">
+        <button type="button" class="secondary" id="btnExportBackup">Exportar respaldo</button>
+        <button type="button" class="secondary" id="btnImportBackup">Importar respaldo</button>
+        <input type="file" id="backupFileInput" accept="application/json,.json" hidden>
+      </div>
+      <p class="save-status" id="saveStatus" aria-live="polite">Guardado automático en este navegador</p>
+    </section>
+
+    <section class="stats" aria-label="Indicadores">
+      <article class="stat"><span id="countApproved">0</span><small>Aprobados</small></article>
+      <article class="stat"><span id="countAvailable">0</span><small>Disponibles</small></article>
+      <article class="stat"><span id="countEnrolled">0</span><small>Inscritos</small></article>
+      <article class="stat"><span id="countBlocked">0</span><small>Bloqueados</small></article>
+    </section>
+
+    <section class="legend" aria-label="Leyenda de estados">
+      <span><i class="dot approved"></i>Aprobado</span>
+      <span><i class="dot available"></i>Disponible</span>
+      <span><i class="dot enrolled"></i>Inscrito</span>
+      <span><i class="dot blocked"></i>Bloqueado</span>
+      <span><i class="dot prereq"></i>Prerrequisito</span>
+      <span><i class="dot dependent"></i>Dependiente</span>
+    </section>
+
+    <section class="filters" aria-label="Filtros de malla">
+      <label class="filter-field">
+        <span>Buscar ramo</span>
+        <input type="search" id="filterText" placeholder="Código o nombre">
+      </label>
+      <label class="filter-field">
+        <span>Estado</span>
+        <select id="filterStatus">
+          <option value="todos">Todos</option>
+          <option value="approved">Aprobados</option>
+          <option value="available">Disponibles</option>
+          <option value="enrolled">Inscritos</option>
+          <option value="blocked">Bloqueados</option>
+        </select>
+      </label>
+      <label class="filter-field">
+        <span>Semestre</span>
+        <select id="filterSemester">
+          <option value="todos">Todos</option>
+        </select>
+      </label>
+      <button type="button" class="filter-clear" id="btnClearFilters">Limpiar filtros</button>
+    </section>
+
+    <section class="malla-section" id="mallaSection">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">Malla curricular</span>
+          <h2>Vista por semestre</h2>
+        </div>
+        <p id="selectedInfo">Selecciona un ramo para ver sus relaciones.</p>
+      </div>
+      <div class="malla-grid" id="mallaGrid" aria-live="polite"></div>
+    </section>
+
+  </main>
+
+  <script src="data/mallas.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administrar mallas - Avance Académico</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    try {
+      const params = new URLSearchParams(window.location.hash.slice(1));
+      const theme = params.get('theme') || localStorage.getItem('avanceAcademico.theme.v1') || sessionStorage.getItem('avanceAcademico.theme.v1');
+      document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
+    } catch (error) {
+      document.documentElement.dataset.theme = 'light';
+    }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">A</span>
+      <div>
+        <h1>Avance Académico</h1>
+        <p>Malla interactiva</p>
+      </div>
+    </div>
+    <nav class="menu" aria-label="Menú principal">
+      <a class="menu-btn" href="index.html">Ver malla</a>
+      <a class="menu-btn active" href="mantenedor.html">Administrar mallas</a>
+      <label class="theme-control">
+        <span>Tema</span>
+        <select id="themeSelect">
+          <option value="light">Claro</option>
+          <option value="dark">Oscuro</option>
+        </select>
+      </label>
+    </nav>
+  </header>
+
+  <main class="layout">
+    <section class="malla-switcher" aria-label="Selector de malla">
+      <div>
+        <span class="eyebrow">Malla activa</span>
+        <h2 id="currentMallaName">Informática</h2>
+        <p id="currentMallaMeta">0 ramos</p>
+      </div>
+      <label class="filter-field">
+        <span>Seleccionar malla</span>
+        <select id="mallaSelect"></select>
+      </label>
+      <div class="switcher-actions">
+        <button type="button" id="btnNewMalla">Nueva malla</button>
+        <button type="button" id="btnDuplicateMalla">Duplicar malla</button>
+      </div>
+      <div class="backup-actions">
+        <button type="button" class="secondary" id="btnExportBackup">Exportar respaldo</button>
+        <button type="button" class="secondary" id="btnImportBackup">Importar respaldo</button>
+        <input type="file" id="backupFileInput" accept="application/json,.json" hidden>
+      </div>
+      <p class="save-status" id="saveStatus" aria-live="polite">Guardado automático en este navegador</p>
+    </section>
+
+    <section class="maintainer" id="maintainerSection">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">Gestión académica</span>
+          <h2>Administrar mallas y ramos</h2>
+        </div>
+      </div>
+
+      <div class="maintainer-grid">
+        <form class="manager-panel" id="mallaForm">
+          <h3>Datos de la malla</h3>
+          <label class="filter-field">
+            <span>Nombre</span>
+            <input type="text" id="mallaName" required>
+          </label>
+          <div class="form-actions">
+            <button type="submit">Guardar malla</button>
+            <button type="button" class="danger" id="btnDeleteMalla">Eliminar malla</button>
+          </div>
+        </form>
+
+        <form class="manager-panel course-editor" id="courseForm">
+          <h3>Ramo</h3>
+          <div class="form-grid">
+            <label class="filter-field">
+              <span>Código</span>
+              <input type="text" id="courseCode" required>
+            </label>
+            <label class="filter-field wide">
+              <span>Nombre</span>
+              <input type="text" id="courseName" required>
+            </label>
+            <label class="filter-field">
+              <span>Semestre</span>
+              <input type="number" id="courseSemester" min="1" value="1" required>
+            </label>
+            <label class="filter-field">
+              <span>Créditos</span>
+              <input type="number" id="courseCredits" min="0" value="0" required>
+            </label>
+            <label class="filter-field">
+              <span>Área</span>
+              <input type="text" id="courseArea" placeholder="General">
+            </label>
+            <label class="filter-field">
+              <span>Periodicidad</span>
+              <select id="coursePeriod">
+                <option value="Ambos">Ambos semestres</option>
+                <option value="Primer semestre">Primer semestre</option>
+                <option value="Segundo semestre">Segundo semestre</option>
+              </select>
+            </label>
+            <label class="filter-field">
+              <span>Estado inicial</span>
+              <select id="courseStatus">
+                <option value="pendiente">Pendiente</option>
+                <option value="aprobado">Aprobado</option>
+                <option value="inscrito">Inscrito</option>
+              </select>
+            </label>
+            <label class="filter-field wide">
+              <span>Prerrequisitos</span>
+              <div class="prereq-picker" id="coursePrereqs" aria-label="Seleccionar prerrequisitos"></div>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" id="courseSubmitText">Agregar ramo</button>
+            <button type="button" class="secondary" id="btnCancelCourse" hidden>Cancelar edición</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="manager-panel course-list-panel">
+        <h3>Ramos de la malla</h3>
+        <div class="course-list" id="courseList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="data/mallas.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
